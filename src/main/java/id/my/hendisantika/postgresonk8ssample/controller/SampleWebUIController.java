@@ -5,7 +5,9 @@ import id.my.hendisantika.postgresonk8ssample.repository.ValueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -34,4 +36,13 @@ public class SampleWebUIController {
         return new ModelAndView("index", "value", values.isEmpty() ? null : values.get(0).getValue());
     }
 
+    @PostMapping("save")
+    public ModelAndView save(@RequestParam("value") String value) {
+        List<Value> values = (List<Value>) repository.findAll();
+        if (!values.isEmpty()) {
+            repository.delete(values.get(0));
+        }
+        repository.save(new Value(value));
+        return new ModelAndView("redirect:/");
+    }
 }
